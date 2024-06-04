@@ -48,7 +48,7 @@ public class ScanManager {
     ManageConnection mc ;
 
     private Set<BluetoothDevice> DiscoveredDevice;
-    private Set<BluetoothDevice> PairedDevice;
+    private Set<BluetoothDevice> PairedDevice = new HashSet<>();
 
 
     public synchronized void  setMain(MainActivity main){
@@ -61,6 +61,7 @@ public class ScanManager {
     }
 
     public synchronized void getPairedDevices( MainActivity main) {
+        PairedDevice.clear();
         try {
             MainActivity.hori.removeAllViews();
             Set<BluetoothDevice> pairedDevices = Util.adapter.getBondedDevices();
@@ -69,6 +70,7 @@ public class ScanManager {
                     if (device != null && device.getName() != null) {
                         LinearLayout temp = getPairedItem(device);
                         MainActivity.hori.addView(temp);
+                        PairedDevice.add(device);
                     }
                 }
             }
@@ -103,7 +105,7 @@ public class ScanManager {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (device != null && device.getName() != null && !isPresent(device)) {
+                if (device != null && device.getName() != null && !isPresent(device) &&!isPaired(device)) {
                     TextView temp = getDiscoveredItem(device);
                     MainActivity.vert.addView(temp);
 
@@ -298,6 +300,10 @@ public class ScanManager {
             }
         }
         return false;
+    }
+
+    boolean isPaired(BluetoothDevice device){
+        return PairedDevice.contains(device);
     }
 
     public void onProfileClick(BluetoothDevice device){
