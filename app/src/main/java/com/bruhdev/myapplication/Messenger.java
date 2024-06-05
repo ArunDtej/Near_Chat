@@ -59,6 +59,7 @@ public class Messenger extends AppCompatActivity {
     }
 
     private LinearLayout createProfileItem(BluetoothProfile p) {
+
         String profileName = p.getPreferredDeviceName();
         LinearLayout horizontalLayout = new LinearLayout(this);
         horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
