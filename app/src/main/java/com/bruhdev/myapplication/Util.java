@@ -17,12 +17,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bruhdev.myapplication.DBManager.BluetoothProfile;
 import com.bruhdev.myapplication.DBManager.BluetoothProfileDao;
 import com.bruhdev.myapplication.DBManager.BluetoothProfileDatabase;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 @SuppressLint("MissingPermission")
@@ -131,6 +135,24 @@ public class Util {
         Util.activity = activity;
         Util.context = context;
 
+    }
+
+    public static int getCustomColor(Context context){
+
+        Set<Integer> numberSet = new HashSet<>();
+
+        numberSet.add(ContextCompat.getColor(context, R.color.itemyellow));
+        numberSet.add(ContextCompat.getColor(context, R.color.itemgreen));
+        numberSet.add(ContextCompat.getColor(context, R.color.itemblue));
+        numberSet.add(ContextCompat.getColor(context, R.color.itempink));
+        numberSet.add(ContextCompat.getColor(context, R.color.itemorange));
+        numberSet.add(ContextCompat.getColor(context, R.color.itemskyblue));
+
+        Integer[] numbersArray = numberSet.toArray(new Integer[0]);
+        Random random = new Random();
+        int randomIndex = random.nextInt(numbersArray.length);
+
+        return numbersArray[randomIndex];
     }
 
 }

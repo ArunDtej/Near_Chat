@@ -124,7 +124,7 @@ public class ScanManager {
                 450));
 
         GradientDrawable drawable = new GradientDrawable();
-        int color = getCustomColor(context);
+        int color = Util.getCustomColor(context);
         drawable.setColor(color);
         drawable.setCornerRadius(85);
         profileLayout.setBackground(drawable);
@@ -150,23 +150,6 @@ public class ScanManager {
         return profileLayout;
     }
 
-    int  getCustomColor(Context context){
-
-        Set<Integer> numberSet = new HashSet<>();
-
-        numberSet.add(ContextCompat.getColor(context, R.color.itemyellow));
-        numberSet.add(ContextCompat.getColor(context, R.color.itemgreen));
-        numberSet.add(ContextCompat.getColor(context, R.color.itemblue));
-        numberSet.add(ContextCompat.getColor(context, R.color.itempink));
-        numberSet.add(ContextCompat.getColor(context, R.color.itemorange));
-        numberSet.add(ContextCompat.getColor(context, R.color.itemskyblue));
-
-        Integer[] numbersArray = numberSet.toArray(new Integer[0]);
-        Random random = new Random();
-        int randomIndex = random.nextInt(numbersArray.length);
-
-        return numbersArray[randomIndex];
-    }
     private Drawable createLetterDrawable(String letter) {
         int size = 130;
         int backgroundColor = Color.WHITE; // Choose your background color
