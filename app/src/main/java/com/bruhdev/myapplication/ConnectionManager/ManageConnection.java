@@ -2,6 +2,7 @@ package com.bruhdev.myapplication.ConnectionManager;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
 import com.bruhdev.myapplication.UiManagers.ScanManager;
@@ -12,7 +13,7 @@ import java.util.logging.Handler;
 public class ManageConnection {
     public  static ManageConnection instance;
     public  AcceptThread at;
-    public ConnectThread ct = null;
+    public ConnectThread ct;
 
     ManageConnection(){
         at  = AcceptThread.getInstance();
@@ -51,5 +52,12 @@ public class ManageConnection {
         if(AcceptThread.isAccepting) {
             at.cancel();
         }
+    }
+
+    public BluetoothSocket getCurrentSocket(){
+        if(Util.connectedAs.matches("Sender")){
+            return ConnectThread.mmSocket;
+        }
+        return AcceptThread.mainSocket;
     }
 }

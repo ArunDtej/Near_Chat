@@ -35,7 +35,8 @@ public class Util {
     public static Activity activity;
 
     public static BluetoothProfileDatabase database;
-    public  static BluetoothProfileDao dao;
+    public static BluetoothProfileDao dao;
+    public static String connectedAs ;
 
     public static void lg(String message) {
         Log.d("Logged", message);

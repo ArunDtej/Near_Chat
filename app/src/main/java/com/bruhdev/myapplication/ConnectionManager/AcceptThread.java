@@ -80,6 +80,7 @@ class AcceptThread extends Thread {
     synchronized void displayDialog(BluetoothSocket socket){
 
         mc = ManageConnection.getInstance();
+        Util.connectedAs = "Receiver";
         (Util.activity).runOnUiThread(new Runnable() {
             @Override
             public void run() {

@@ -31,7 +31,6 @@ import com.getkeepsafe.taptargetview.TapTargetView;
 
 import java.util.concurrent.Delayed;
 
-
 @SuppressLint("MissingPermission")
 public class MainActivity extends AppCompatActivity {
 
