@@ -33,6 +33,8 @@ android {
 
 dependencies {
 
+    val room_version = "2.6.1"
+
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -44,8 +46,9 @@ dependencies {
     implementation("io.github.dreierf:material-intro-screen:0.0.6")
     implementation("pub.devrel:easypermissions:3.0.0")
     implementation("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
-    implementation("androidx.room:room-runtime:$rootProject.roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$rootProject.roomVersion")
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
 
 
 }

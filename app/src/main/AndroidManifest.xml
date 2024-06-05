@@ -21,6 +21,9 @@
         android:theme="@style/Theme.NearChat"
         tools:targetApi="31">
         <activity
+            android:name=".messenger"
+            android:exported="false" />
+        <activity
             android:name=".Messages"
             android:exported="false" />
         <activity

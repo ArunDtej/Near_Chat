@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = Util.adapter;
 
         Util.track(this, MainActivity.this);
-        Util.setDB();
 
         discoverable.setOnClickListener(new View.OnClickListener() {
             @Override

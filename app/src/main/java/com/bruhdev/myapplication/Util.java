@@ -1,7 +1,5 @@
 package com.bruhdev.myapplication;
 
-import static com.bruhdev.myapplication.Util.isBluetoothEnabled;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -20,10 +18,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
-import com.bruhdev.myapplication.DBManager.BluetoothProfile;
-import com.bruhdev.myapplication.DBManager.BluetoothProfileDao;
-import com.bruhdev.myapplication.DBManager.BluetoothProfileDatabase;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -35,25 +29,11 @@ public class Util {
     public static Context appConext;
     public static Context context;
     public static Activity activity;
-    public static BluetoothProfileDatabase db;
-    public static BluetoothProfileDao dao;
-
     public static void lg(String message) {
         Log.d("Logged", message);
     }
 
-    public static void setDB() {
-        db = BluetoothProfileDatabase.getDatabase();
-        dao = db.bluetoothProfileDao();
-    }
 
-    public static void safeInsert(BluetoothDevice device) {
-        dao.safeInsert(getBluetoothProfile(device));
-    }
-
-    public static List<BluetoothProfile> getSortedProfiles() {
-        return dao.getAllProfilesSortedByLastSeenTime();
-    }
 
     private static boolean isBluetoothPermissionRequired() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
@@ -109,14 +89,6 @@ public class Util {
         }
     }
 
-    public static BluetoothProfile getBluetoothProfile(BluetoothDevice device) {
-        BluetoothProfile profile = new BluetoothProfile();
-        profile.setDeviceAddress(device.getAddress());
-        profile.setDeviceName(device.getName());
-        profile.setPreferredDeviceName(device.getName());
-        profile.setLastSeenTime(System.currentTimeMillis());
-        return profile;
-    }
 
     public static void track(Context context, Activity activity) {
 
