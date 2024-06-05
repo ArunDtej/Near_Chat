@@ -1,10 +1,8 @@
-package com.bruhdev.myapplication.UiManagers;
+package com.bruhdev.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-
-import com.bruhdev.myapplication.R;
 
 public class Messenger extends AppCompatActivity {
 
