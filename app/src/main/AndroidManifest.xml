@@ -24,9 +24,6 @@
             android:name=".Messenger"
             android:exported="false" />
         <activity
-            android:name=".UiManagers.Messenger"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
