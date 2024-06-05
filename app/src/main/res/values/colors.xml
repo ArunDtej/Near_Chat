@@ -8,6 +8,7 @@
     <color name="itemyellow">#E8D42CF1</color>
     <color name="itemorange">#EEFFB446</color>
     <color name="itemskyblue">#E629E7FF</color>
-    <color name="MainBackground">#F3043E6C</color>
+    <color name="MainBackground">#F3092F4C</color>
     <color name="blue">#F52399F6</color>
+    <color name="newcol">#153873</color>
 </resources>

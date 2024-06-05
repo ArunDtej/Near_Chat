@@ -1,18 +1,25 @@
 package com.bruhdev.myapplication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,8 +45,19 @@ public class Messenger extends AppCompatActivity {
     }
 
     public void refresh(){
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                profilesLayout.removeAllViews();
+            }
+        }, 0);
+
+
         Util.lg(" Messenger refresh ");
         new Thread(()->{
+
             profiles = Util.getBluetoothProfiles();
             for(int i = 0;i<profiles.size(); i++){
                 Util.lg(profiles.get(i).getDeviceName() + " size : "+ profiles.size());
@@ -52,7 +70,6 @@ public class Messenger extends AppCompatActivity {
                         profilesLayout.addView(temp);
                     }
                 });
-
 
             }
         }).start();
@@ -86,13 +103,11 @@ public class Messenger extends AppCompatActivity {
         initialTextView.setGravity(Gravity.CENTER);
         initialTextView.setTypeface(null, Typeface.BOLD);
 
-        // Set background drawable for profile picture
         GradientDrawable background = new GradientDrawable();
         background.setColor(Util.getCustomColor(this));
         background.setShape(GradientDrawable.OVAL);
         profilePictureFrame.setBackground(background);
 
-        // Add the initial TextView to the FrameLayout
         profilePictureFrame.addView(initialTextView);
 
         horizontalLayout.addView(profilePictureFrame);
@@ -104,26 +119,125 @@ public class Messenger extends AppCompatActivity {
         textView.setPadding(32, 16, 32, 16);
         textView.setTextColor(Color.WHITE);
         textView.setTypeface(null, Typeface.BOLD);
+        textView.setTag(p.getDeviceAddress());
+
+        textView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                showCustomDialog(p.getDeviceAddress());
+                return true;
+            }
+        });
+
         horizontalLayout.addView(textView);
 
 
         horizontalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                BluetoothDevice device = Util.adapter(p.deviceAddress);
-//                makeConnection(device, Messenger.this, Util.MY_UUID);
-//                startChat(p);
-            }
-        });
-
-        horizontalLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-//                DeleteChat(p.deviceAddress);
-                return true;
             }
         });
         return horizontalLayout;
+    }
+    private AlertDialog dialog = null;
+
+    private void showCustomDialog(String address) {
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.custom_dialog, null);
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setView(dialogView);
+
+        Button buttonRename = dialogView.findViewById(R.id.button_rename);
+        Button buttonDelete = dialogView.findViewById(R.id.button_delete);
+
+        buttonRename.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    rename(address);
+                    dialog.dismiss();
+            }
+        });
+
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteChat(address);
+                dialog.dismiss();
+            }
+        });
+
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = 600;
+        dialog.getWindow().setAttributes(layoutParams);
+    }
+
+    void DeleteChat(String deviceToRemove){
+        AlertDialog.Builder builder = new AlertDialog.Builder(Messenger.this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("Delete contact and chat history?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Util.removeBluetoothProfile(deviceToRemove);
+                refresh();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    public void rename(String address){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Rename Device");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newName = input.getText().toString();
+                if (!newName.isEmpty()) {
+                    new Thread(() -> {
+                        BluetoothProfile profile = Util.getProfile(address);
+                        profile.setPreferredDeviceName(newName);
+                        Util.updatePreferredName(profile.getDeviceAddress(), newName);
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                refresh();
+                            }
+                        }, 0);
+
+                    }).start();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     @Override

@@ -59,10 +59,24 @@ public class Util {
         }).start();
     }
 
+    public static void removeBluetoothProfile(String address){
+        new Thread(() -> {
+            dao.deleteProfileByAddress(address);
+        }).start();
+    }
+
     public static List<BluetoothProfile> getBluetoothProfiles(){
-
         return dao.getAllProfilesSortedByLastSeenTime();
+    }
 
+    public static BluetoothProfile getProfile(String address){
+        return dao.getProfileByAddress(address);
+    }
+
+    public static void updatePreferredName(String address,String name){
+        new Thread(() -> {
+            dao.updatePreferredName(address, name);
+        }).start();
     }
 
     public static BluetoothProfile getBluetoothProfile(BluetoothDevice device){

@@ -23,6 +23,9 @@ public interface BluetoothProfileDao {
     @Query("SELECT * FROM bluetooth_profiles ORDER BY lastSeenTime DESC")
     List<BluetoothProfile> getAllProfilesSortedByLastSeenTime();
 
+    @Query("DELETE FROM bluetooth_profiles WHERE deviceAddress = :deviceAddress")
+    void deleteProfileByAddress(String deviceAddress);
+
     @Transaction
     default void safeInsertOrUpdateProfile(BluetoothProfile profile) {
         BluetoothProfile existingProfile = getProfileByAddress(profile.getDeviceAddress());
