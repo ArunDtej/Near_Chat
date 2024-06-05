@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -36,6 +37,8 @@ public class Messenger extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messenger);
+
+        Util.track(this, Messenger.this);
 
         profilesLayout = findViewById(R.id.profilesLayout);
         Util.track(this, Messenger.this);
@@ -115,13 +118,13 @@ public class Messenger extends AppCompatActivity {
         TextView textView = new TextView(this);
         textView.setText(profileName);
         textView.setTextColor(Color.BLACK);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         textView.setPadding(32, 16, 32, 16);
         textView.setTextColor(Color.WHITE);
         textView.setTypeface(null, Typeface.BOLD);
         textView.setTag(p.getDeviceAddress());
 
-        textView.setOnLongClickListener(new View.OnLongClickListener() {
+        horizontalLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 showCustomDialog(p.getDeviceAddress());
@@ -135,6 +138,11 @@ public class Messenger extends AppCompatActivity {
         horizontalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Intent intent = new Intent(Messenger.this, Chat.class);
+                intent.putExtra("Address", p.getDeviceAddress());
+                startActivity(intent);
+
             }
         });
         return horizontalLayout;
@@ -201,14 +209,24 @@ public class Messenger extends AppCompatActivity {
 
     public void rename(String address){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Rename Device");
+        builder.setTitle("Save device as");
 
-        // Set up the input
+
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
 
-        // Set up the buttons
+        FrameLayout container = new FrameLayout(this);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        int margin = (int) (16 * getResources().getDisplayMetrics().density); // 16dp to pixels
+        params.setMargins(margin, margin, margin, margin);
+        input.setLayoutParams(params);
+        container.addView(input);
+        builder.setView(container);
+
+
         builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -237,12 +255,23 @@ public class Messenger extends AppCompatActivity {
             }
         });
 
-        builder.show();
+        AlertDialog dialog = builder.create();
+
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE);
+            }
+        });
+
+        dialog.show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        Util.track(this, Messenger.this);
     }
 }
