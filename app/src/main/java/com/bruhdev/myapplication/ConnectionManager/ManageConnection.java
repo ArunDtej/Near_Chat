@@ -29,6 +29,9 @@ public class ManageConnection {
     }
 
     public  void reqConnection(BluetoothDevice device){
+        if (ct != null) {
+            ct.cancel();
+        }
         ct = new ConnectThread(device);
         ct.start();
     }
@@ -37,15 +40,10 @@ public class ManageConnection {
         at = AcceptThread.getInstance();
         try {
             if (!AcceptThread.isAccepting) {
-                Util.lg("Called set to accepting: is not accepting");
                 at.start();
-
-                Util.lg("Accepting");
             }
-            Util.lg("Called set to accepting: is accepting");
-
         }catch (Exception e){
-            Util.lg(""+e);
+            Util.lg(" ManageConnection " + e);
         }
     }
 

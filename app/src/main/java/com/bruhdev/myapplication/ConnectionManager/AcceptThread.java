@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.bruhdev.myapplication.MainActivity;
 import com.bruhdev.myapplication.Util;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -91,8 +92,6 @@ class AcceptThread extends Thread {
                     public void onClick(DialogInterface dialog, int id) {
                         mainSocket = socket;
                         accepted = true;
-                        Toast.makeText(Util.context, ""+ isAccepting, Toast.LENGTH_SHORT).show();
-
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

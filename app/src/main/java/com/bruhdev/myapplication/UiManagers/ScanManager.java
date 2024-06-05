@@ -85,7 +85,6 @@ public class ScanManager {
         if (Util.adapter.isDiscovering()) {
             Util.adapter.cancelDiscovery();
         }
-        MainActivity.vert.removeAllViews();
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -96,7 +95,7 @@ public class ScanManager {
             public void run() {
                 boolean started = Util.adapter.startDiscovery();
             }
-        }, 2000);
+        }, 2500);
         return;
     }
 
@@ -295,7 +294,7 @@ public class ScanManager {
         for(int i = 0;i<len;i++) {
             View temp = MainActivity.vert.getChildAt(0);
             String x = ((TextView) temp).getText().toString();
-            if(x.equals(device.getName()+", add: "+device.getAddress())){
+            if (x.matches(device.getName() + ", add: " + device.getAddress())) {
                 return true;
             }
         }

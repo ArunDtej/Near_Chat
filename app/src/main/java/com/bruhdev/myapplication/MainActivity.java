@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         welcome = findViewById(R.id.WelcomeText);
         pbar = findViewById(R.id.progressBar);
-        vert = findViewById(R.id.DiscoveredScroller);
+        MainActivity.vert = findViewById(R.id.DiscoveredScroller);
         hori = findViewById(R.id.PairedScroller);
         discoverable = findViewById(R.id.discovery_text);
         swipeRefreshLayout = findViewById(R.id.refresh_layout);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        vert.setOnTouchListener(new View.OnTouchListener() {
+        MainActivity.vert.setOnTouchListener(new View.OnTouchListener() {
             private float startY;
             private boolean isScrollingUp = false;
 
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_MOVE:
                         float currentY = event.getY();
                         isScrollingUp = currentY < startY;
-                        if (!isScrollingUp && vert.getScrollY() == 0) {
+                        if (!isScrollingUp && MainActivity.vert.getScrollY() == 0) {
                             swipeRefreshLayout.setEnabled(true);
                         } else {
                             swipeRefreshLayout.setEnabled(false);
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                             swipeRefreshLayout.setEnabled(false);
                         } else {
                             // Scrolling up
-                            swipeRefreshLayout.setEnabled(vert.getScrollY() == 0);
+                            swipeRefreshLayout.setEnabled(MainActivity.vert.getScrollY() == 0);
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -144,11 +144,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        if (isFirstTime() || !Util.CheckPermissions(this)) {
-                startActivityForResult(new Intent(this, IntroActivity.class), 10);
-
-        }
-        else {
+        if (!Util.CheckPermissions(this)) {
+            startActivityForResult(new Intent(this, IntroActivity.class), 10);
+        } else {
 
             try {
                 handler.postDelayed(new Runnable() {
@@ -166,7 +164,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void refresh(){
+    public void refresh() {
+
+        Util.EnableBluetooth(MainActivity.this);
 
         mc = ManageConnection.getInstance();
         mc.acceptConnection();
@@ -181,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
                 String deviceName = adapter.getName();
                 welcome.setText("Hello " + deviceName);
             }
-            Util.lg(" 192 ");
 
             try {
                 sm.getDiscoveredDevices(this);
@@ -201,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
             Util.lg("main : "+e);
         }
 
-        Util.lg("No errorin refresh");
     }
 
     private boolean isFirstTime() {
@@ -221,11 +219,10 @@ public class MainActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
 
-//                if (isFirstTime()) {
-//                    TapTarget();
-//                }
+                if (isFirstTime()) {
+                    TapTarget();
+                }
 
-                TapTarget();
                 refresh();
 
             } else {

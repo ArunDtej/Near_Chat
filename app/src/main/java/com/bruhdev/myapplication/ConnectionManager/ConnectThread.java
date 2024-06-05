@@ -10,8 +10,10 @@ import java.io.IOException;
 
 @SuppressLint("MissingPermission")
 class ConnectThread extends Thread {
-    private final BluetoothSocket mmSocket;
+    private BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
+
+    public boolean isConnected = false;
 
     public ConnectThread(BluetoothDevice device) {
         BluetoothSocket tmp = null;
@@ -21,7 +23,7 @@ class ConnectThread extends Thread {
             tmp = device.createRfcommSocketToServiceRecord(Util.MY_UUID);
             Util.lg("Socket created");
         } catch (IOException e) {
-            Util.lg( "Socket's create() method failed: "+ e);
+            Util.lg("Socket's create() method failed: " + e);
         }
         mmSocket = tmp;
     }
@@ -30,10 +32,11 @@ class ConnectThread extends Thread {
         Util.adapter.cancelDiscovery();
 
         try {
+            isConnected = true;
             mmSocket.connect();
             Util.lg("Connedted");
         } catch (IOException connectException) {
-            cancel();
+            Util.lg("connect thread run 37: " + connectException);
             return;
         }
 
