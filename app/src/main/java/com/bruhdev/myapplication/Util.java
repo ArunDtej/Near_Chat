@@ -18,6 +18,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
+import com.bruhdev.myapplication.DBManager.BluetoothProfile;
+import com.bruhdev.myapplication.DBManager.BluetoothProfileDao;
+import com.bruhdev.myapplication.DBManager.BluetoothProfileDatabase;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -29,10 +33,41 @@ public class Util {
     public static Context appConext;
     public static Context context;
     public static Activity activity;
+
+    public static BluetoothProfileDatabase database;
+    public  static BluetoothProfileDao dao;
+
     public static void lg(String message) {
         Log.d("Logged", message);
     }
 
+    public static void setDatabase(){
+
+        database = BluetoothProfileDatabase.getInstance();
+        dao = database.bluetoothProfileDao();
+
+    }
+
+    public static void safeInsert(BluetoothDevice device){
+        new Thread(() -> {
+            dao.safeInsertOrUpdateProfile(Util.getBluetoothProfile(device));
+        }).start();
+    }
+
+    public static List<BluetoothProfile> getBluetoothProfiles(){
+
+        return dao.getAllProfilesSortedByLastSeenTime();
+
+    }
+
+    public static BluetoothProfile getBluetoothProfile(BluetoothDevice device){
+        BluetoothProfile profile = new BluetoothProfile();
+        profile.setDeviceAddress(device.getAddress());
+        profile.setDeviceName(device.getName());
+        profile.setPreferredDeviceName(device.getName());
+        profile.setLastSeenTime(System.currentTimeMillis());
+        return profile;
+    }
 
 
     private static boolean isBluetoothPermissionRequired() {

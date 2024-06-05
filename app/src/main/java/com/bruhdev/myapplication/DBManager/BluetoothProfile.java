@@ -10,12 +10,41 @@ public class BluetoothProfile {
     @PrimaryKey
     @NonNull
     private String deviceAddress;
-
     private String deviceName;
     private String preferredDeviceName;
     private long lastSeenTime;
 
-    // Getters and setters
-    // Constructor
+    @NonNull
+    public String getDeviceAddress() {
+        return deviceAddress;
+    }
+
+    public void setDeviceAddress(@NonNull String deviceAddress) {
+        this.deviceAddress = deviceAddress;
+    }
+
+    public long getLastSeenTime() {
+        return lastSeenTime;
+    }
+
+    public void setLastSeenTime(long lastSeenTime) {
+        this.lastSeenTime = lastSeenTime;
+    }
+
+    public String getPreferredDeviceName() {
+        return preferredDeviceName;
+    }
+
+    public void setPreferredDeviceName(String preferredDeviceName) {
+        this.preferredDeviceName = preferredDeviceName;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
 }
 

@@ -92,7 +92,11 @@ class AcceptThread extends Thread {
                     public void onClick(DialogInterface dialog, int id) {
                         mainSocket = socket;
                         accepted = true;
-//                        Util.safeInsert(mainSocket.getRemoteDevice());
+                        try {
+                            Util.safeInsert(mainSocket.getRemoteDevice());
+                        }catch (Exception e){
+                            Util.lg(" at safe insert "+ e);
+                        }
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

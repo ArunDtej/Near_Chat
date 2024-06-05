@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bruhdev.myapplication.ConnectionManager.ManageConnection;
+import com.bruhdev.myapplication.DBManager.BluetoothProfileDatabase;
 import com.bruhdev.myapplication.UiManagers.ScanManager;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public static LinearLayout hori;
     private TextView discoverable;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView to_message;
 
     public static Handler handler = new Handler();
     BluetoothAdapter adapter;
@@ -61,10 +63,20 @@ public class MainActivity extends AppCompatActivity {
         hori = findViewById(R.id.PairedScroller);
         discoverable = findViewById(R.id.discovery_text);
         swipeRefreshLayout = findViewById(R.id.refresh_layout);
+        to_message =findViewById(R.id.to_messages);
 
         adapter = Util.adapter;
 
         Util.track(this, MainActivity.this);
+        Util.setDatabase();
+
+        to_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Messenger.class);
+                startActivity(intent);
+            }
+        });
 
         discoverable.setOnClickListener(new View.OnClickListener() {
             @Override
