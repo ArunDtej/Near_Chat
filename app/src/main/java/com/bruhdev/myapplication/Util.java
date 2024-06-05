@@ -5,6 +5,7 @@ import static com.bruhdev.myapplication.Util.isBluetoothEnabled;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +20,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 
+import com.bruhdev.myapplication.DBManager.BluetoothProfile;
+import com.bruhdev.myapplication.DBManager.BluetoothProfileDao;
+import com.bruhdev.myapplication.DBManager.BluetoothProfileDatabase;
+
+import java.util.List;
 import java.util.UUID;
 
 @SuppressLint("MissingPermission")
@@ -26,22 +32,37 @@ public class Util {
     public final static UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     public final static BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 
+    public static Context appConext;
     public static Context context;
     public static Activity activity;
+    public static BluetoothProfileDatabase db;
+    public static BluetoothProfileDao dao;
 
-    public static void lg(String message){
+    public static void lg(String message) {
         Log.d("Logged", message);
     }
 
+    public static void setDB() {
+        db = BluetoothProfileDatabase.getDatabase();
+        dao = db.bluetoothProfileDao();
+    }
+
+    public static void safeInsert(BluetoothDevice device) {
+        dao.safeInsert(getBluetoothProfile(device));
+    }
+
+    public static List<BluetoothProfile> getSortedProfiles() {
+        return dao.getAllProfilesSortedByLastSeenTime();
+    }
 
     private static boolean isBluetoothPermissionRequired() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
     }
 
-    static boolean CheckPermissions(Activity context){
-        if(isBluetoothPermissionRequired()) {
+    static boolean CheckPermissions(Activity context) {
+        if (isBluetoothPermissionRequired()) {
             return ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(context,Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         }
@@ -86,6 +107,22 @@ public class Util {
                     })
                     .show();
         }
+    }
+
+    public static BluetoothProfile getBluetoothProfile(BluetoothDevice device) {
+        BluetoothProfile profile = new BluetoothProfile();
+        profile.setDeviceAddress(device.getAddress());
+        profile.setDeviceName(device.getName());
+        profile.setPreferredDeviceName(device.getName());
+        profile.setLastSeenTime(System.currentTimeMillis());
+        return profile;
+    }
+
+    public static void track(Context context, Activity activity) {
+
+        Util.activity = activity;
+        Util.context = context;
+
     }
 
 }

@@ -37,11 +37,15 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("androidx.room:room-common:2.6.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("io.github.dreierf:material-intro-screen:0.0.6")
     implementation("pub.devrel:easypermissions:3.0.0")
-    implementation ("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
+    implementation("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
+    implementation("androidx.room:room-runtime:$rootProject.roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$rootProject.roomVersion")
+
 
 }

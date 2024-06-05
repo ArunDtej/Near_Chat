@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
+import com.bruhdev.myapplication.DBManager.BluetoothProfile;
 import com.bruhdev.myapplication.Util;
 
 import java.io.IOException;
@@ -11,13 +12,11 @@ import java.io.IOException;
 @SuppressLint("MissingPermission")
 class ConnectThread extends Thread {
     private BluetoothSocket mmSocket;
-    private final BluetoothDevice mmDevice;
 
     public boolean isConnected = false;
 
     public ConnectThread(BluetoothDevice device) {
         BluetoothSocket tmp = null;
-        mmDevice = device;
 
         try {
             tmp = device.createRfcommSocketToServiceRecord(Util.MY_UUID);
@@ -34,7 +33,7 @@ class ConnectThread extends Thread {
         try {
             isConnected = true;
             mmSocket.connect();
-            Util.lg("Connedted");
+            Util.safeInsert(mmSocket.getRemoteDevice());
         } catch (IOException connectException) {
             Util.lg("connect thread run 37: " + connectException);
             return;

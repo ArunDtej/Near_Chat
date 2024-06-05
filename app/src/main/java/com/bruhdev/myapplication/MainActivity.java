@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Util.appConext = getApplicationContext();
+
         welcome = findViewById(R.id.WelcomeText);
         pbar = findViewById(R.id.progressBar);
         MainActivity.vert = findViewById(R.id.DiscoveredScroller);
@@ -62,7 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = Util.adapter;
 
-        trackActivity();
+        Util.track(this, MainActivity.this);
+        Util.setDB();
 
         discoverable.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -343,14 +346,10 @@ public class MainActivity extends AppCompatActivity {
         tvs.start();
     }
 
-    public void trackActivity(){
-        Util.context = this;
-        Util.activity = MainActivity.this;
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        trackActivity();
+        Util.track(this, MainActivity.this);
     }
 }
