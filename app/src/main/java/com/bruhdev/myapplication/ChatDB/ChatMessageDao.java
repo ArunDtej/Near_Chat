@@ -14,4 +14,8 @@ public interface ChatMessageDao {
 
     @Query("SELECT * FROM chat_history WHERE address = :address ORDER BY timestamp ASC")
     List<ChatMessage> getChatHistory(String address);
+
+    @Query("DELETE FROM chat_history WHERE address = :address")
+    void deleteChatHistory(String address);
 }
+

@@ -18,21 +18,21 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bruhdev.myapplication.ChatDB.ChatManager;
+import com.bruhdev.myapplication.ChatDB.ChatMessage;
 import com.bruhdev.myapplication.ConnectionManager.ManageConnection;
 import com.bruhdev.myapplication.DBManager.BluetoothProfile;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Chat extends AppCompatActivity {
@@ -50,6 +50,7 @@ public class Chat extends AppCompatActivity {
     private String address;
     public ManageConnection mc;
 
+    private final Handler handler = new Handler(Looper.getMainLooper());
     public BluetoothConnectionChecker bcc;
 
     @Override
@@ -88,34 +89,100 @@ public class Chat extends AppCompatActivity {
         }catch (Exception e){
             Util.lg(" "+e);
         }
+        loadMessages();
+    }
+
+    private void loadMessages(){
+
+        new Thread(() -> {
+            List<ChatMessage> previous_chat= ChatManager.getMessages(address);
+
+            for(int i = 0; i < previous_chat.size(); i++){
+                ChatMessage chatitem = previous_chat.get(i);
+                String m = chatitem.getMessage();
+                boolean isSent = chatitem.isSentTo();
+                long time = chatitem.getTimestamp();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        LinearLayout msgView ;
+                        if (isSent){
+                            msgView = getSendMessage(m, time);
+                        }
+                        else{
+                            msgView = getReceiveMessage(m, time);
+                        }
+
+                        ChatBox.addView(msgView);
+
+                        ChatScroller.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ChatScroller.fullScroll(View.FOCUS_DOWN);
+                            }
+                        });
+                    }
+
+
+                });
+            }
+        }).start();
+
 
     }
 
 
     private void sendMessage() {
         try {
-            String msg = messageInput.getText().toString();
-            messageInput.setText("");
 
-            //            ManageConnection.mbs.send(msg);
+                String msg = messageInput.getText().toString();
+                messageInput.setText("");
 
-            LinearLayout temp = getSendMessage(msg);
-            ChatBox.addView(temp);
+                if(checkAddress()) {
+                    ManageConnection.mbs.send(msg);
+                    ChatManager.insert(msg, true, address);
+                    long currentTimeMillis = System.currentTimeMillis();
+                    LinearLayout temp = getSendMessage(msg, currentTimeMillis);
+                    ChatBox.addView(temp);
 
-            ChatScroller.post(new Runnable() {
-                @Override
-                public void run() {
-                    ChatScroller.fullScroll(View.FOCUS_DOWN);
+                    ChatScroller.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ChatScroller.fullScroll(View.FOCUS_DOWN);
+                        }
+                    });
                 }
-            });
+                else{
+                    Toast.makeText(Chat.this, "Not connected to target device 😂", Toast.LENGTH_SHORT).show();
+                }
 
-        } catch (Exception e) {
-            Toast.makeText(Chat.this, "Message not send, reconnect and try again 😂", Toast.LENGTH_SHORT).show();
-            Util.lg(" " + e);
+            } catch(Exception e){
+                Toast.makeText(Chat.this, "Message not send, reconnect and try again 😂", Toast.LENGTH_SHORT).show();
+                Util.lg(" " + e);
         }
+
     }
 
-    private LinearLayout getReceiveMessage(String msg){
+    public void updateView(String msg){
+        if(checkAddress()) {
+
+            handler.post(() -> {
+                long currentTimeMillis = System.currentTimeMillis();
+                LinearLayout temp = getReceiveMessage(msg, currentTimeMillis);
+                ChatBox.addView(temp);
+
+                ChatScroller.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ChatScroller.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
+            });
+        }
+
+    }
+
+    private LinearLayout getReceiveMessage(String msg, long currentTimeMillis){
         LinearLayout messageLayoutWrapper = new LinearLayout(this);
         messageLayoutWrapper.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -150,7 +217,6 @@ public class Chat extends AppCompatActivity {
             }
         });
 
-        long currentTimeMillis = System.currentTimeMillis();
 
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         String formattedTimestamp = sdf.format(new Date(currentTimeMillis));
@@ -169,7 +235,7 @@ public class Chat extends AppCompatActivity {
     }
 
 
-    private LinearLayout getSendMessage(String msg){
+    private LinearLayout getSendMessage(String msg, long currentTimeMillis){
         LinearLayout messageLayoutWrapper = new LinearLayout(this);
         messageLayoutWrapper.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -204,7 +270,6 @@ public class Chat extends AppCompatActivity {
             }
         });
 
-        long currentTimeMillis = System.currentTimeMillis();
 
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         String formattedTimestamp = sdf.format(new Date(currentTimeMillis));
@@ -247,16 +312,18 @@ public class Chat extends AppCompatActivity {
     void updateStatus(){
 
         try {
-            mc = ManageConnection.getInstance();
-            if (mc.getCurrentSocket() != null) {
-                if (ManageConnection.isConnected) {
-                    statusText.setText("Online");
-                } else {
-                    statusText.setText("Offline");
+            if(checkAddress()) {
+                mc = ManageConnection.getInstance();
+                if (mc.getCurrentSocket() != null) {
+                    if (ManageConnection.isConnected) {
+                        statusText.setText("Online");
+                    } else {
+                        statusText.setText("Offline");
+                    }
                 }
             }
             else{
-                Util.lg(" current socket is null");
+                statusText.setText("Offline");
             }
         }catch (Exception e){
             Util.lg(" "+ e);
@@ -274,6 +341,17 @@ public class Chat extends AppCompatActivity {
         super.onDestroy();
         Util.InChat = false;
         bcc.stopChecker();
+    }
+
+    boolean checkAddress(){
+        boolean temp ;
+        if(address.matches(ManageConnection.getInstance().getCurrentSocket().getRemoteDevice().getAddress())){
+            temp = true;
+        }
+        else{
+            temp = false;
+        }
+        return temp;
     }
 }
 

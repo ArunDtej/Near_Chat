@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.widget.Toast;
 
+import com.bruhdev.myapplication.Chat;
+import com.bruhdev.myapplication.ChatDB.ChatManager;
 import com.bruhdev.myapplication.ConnectionManager.ManageConnection;
 import com.bruhdev.myapplication.Util;
 
@@ -75,7 +77,13 @@ public class MyBluetoothServices {
                             mmBuffer);
                     readMsg.sendToTarget();
                     String message = new String((byte[]) readMsg.obj, 0, readMsg.arg1);
+                    ChatManager.insert( message,false, mmSocket.getRemoteDevice().getAddress() );
+
                     Util.lg(" Received message: " + message);
+
+                    if(Util.InChat) {
+                        ((Chat) Util.activity).updateView(message);
+                    }
 
                     ManageConnection.isConnected = true;
                     Util.lg(" Connection Stable");

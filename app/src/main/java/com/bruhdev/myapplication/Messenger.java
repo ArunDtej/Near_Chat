@@ -2,10 +2,12 @@ package com.bruhdev.myapplication;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -25,6 +27,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bruhdev.myapplication.ChatDB.ChatManager;
+import com.bruhdev.myapplication.ChatDB.ChatMessage;
 import com.bruhdev.myapplication.DBManager.BluetoothProfile;
 
 import java.util.List;
@@ -193,6 +197,7 @@ public class Messenger extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Util.removeBluetoothProfile(deviceToRemove);
+                ChatManager.deleteChat(deviceToRemove);
                 refresh();
             }
         });
@@ -203,7 +208,28 @@ public class Messenger extends AppCompatActivity {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+                int nightModeFlags = Util.activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                switch (nightModeFlags) {
+                    case Configuration.UI_MODE_NIGHT_YES:
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.white));
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.white));
+                        break;
+
+                    case Configuration.UI_MODE_NIGHT_NO:
+                    case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.black));
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.black));
+                        break;
+                }
+
+            }
+        });
         dialog.show();
+
     }
 
 

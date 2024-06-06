@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
@@ -131,19 +132,41 @@ public class Util {
     }
     public static void EnableLocation(Activity main){
         if (!isLocationEnabled(main)){
-            new AlertDialog.Builder(main)
+            AlertDialog dialog = new AlertDialog.Builder(main)
                     .setTitle("Enable Location")
                     .setMessage("Location services are required for this app. Please enable location.")
-                    .setPositiveButton("Enable", (dialog, which) -> {
+                    .setPositiveButton("Enable", (dialogInterface, which) -> {
                         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         main.startActivityForResult(intent, 20);
-                        dialog.dismiss();
+                        dialogInterface.dismiss();
                     })
-                    .setNegativeButton("Cancel", (dialog, which) -> {
-                        dialog.dismiss();
+                    .setNegativeButton("Cancel", (dialogInterface, which) -> {
+                        dialogInterface.dismiss();
                         Toast.makeText(main, "Location is required for Bluetooth discovery.", Toast.LENGTH_SHORT).show();
                     })
-                    .show();
+                    .create();
+
+            dialog.setOnShowListener(dialogInterface -> {
+
+                int nightModeFlags = Util.activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                switch (nightModeFlags) {
+                    case Configuration.UI_MODE_NIGHT_YES:
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.white));
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.white));
+                        break;
+
+                    case Configuration.UI_MODE_NIGHT_NO:
+                    case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.black));
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.black));
+                        break;
+                }
+
+
+            });
+
+            dialog.show();
+
         }
     }
 

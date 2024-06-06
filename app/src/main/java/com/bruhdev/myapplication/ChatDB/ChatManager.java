@@ -14,8 +14,15 @@ public class ChatManager {
         }).start();
     }
 
+
     public static List<ChatMessage> getMessages(String address){
         return cmd.getChatHistory(address);
+    }
+
+    public static void deleteChat(String address){
+        new Thread(() -> {
+            cmd.deleteChatHistory(address);
+        }).start();
     }
 
     public static ChatMessage getChatMessage(String msg, boolean sentTo, String address) {
@@ -26,7 +33,5 @@ public class ChatManager {
         chatMessage.setTimestamp(System.currentTimeMillis());
         return chatMessage;
     }
-
-
 
 }

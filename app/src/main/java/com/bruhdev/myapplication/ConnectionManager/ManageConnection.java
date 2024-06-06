@@ -58,6 +58,7 @@ public class ManageConnection {
     }
 
     public BluetoothSocket getCurrentSocket(){
+        at = AcceptThread.getInstance();
         if(Util.connectedAs.matches("Sender")){
             return ConnectThread.mmSocket;
         }

@@ -9,14 +9,17 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.bruhdev.myapplication.IOManager.MyBluetoothServices;
 import com.bruhdev.myapplication.MainActivity;
+import com.bruhdev.myapplication.R;
 import com.bruhdev.myapplication.Util;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -88,7 +91,7 @@ class AcceptThread extends Thread {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(Util.activity);
                 builder.setTitle("Connection request");
-                builder.setMessage("Connection request from: "+ socket.getRemoteDevice().getName());
+                builder.setMessage("Connection request from: " + socket.getRemoteDevice().getName());
 
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -98,18 +101,37 @@ class AcceptThread extends Thread {
                         ManageConnection.mbs = new MyBluetoothServices(mainSocket);
                         try {
                             Util.safeInsert(mainSocket.getRemoteDevice());
-                        }catch (Exception e){
-                            Util.lg(" at safe insert "+ e);
+                        } catch (Exception e) {
+                            Util.lg(" at safe insert " + e);
                         }
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
+                        dialog.dismiss();
                     }
                 });
 
                 AlertDialog dialog = builder.create();
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+
+                        int nightModeFlags = Util.activity.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                        switch (nightModeFlags) {
+                            case Configuration.UI_MODE_NIGHT_YES:
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.white));
+                                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.white));
+                                break;
+
+                            case Configuration.UI_MODE_NIGHT_NO:
+                            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.black));
+                                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(Util.activity, R.color.black));
+                                break;
+                        }
+                    }
+                });
                 dialog.show();
 
                 mc.acceptConnection();
