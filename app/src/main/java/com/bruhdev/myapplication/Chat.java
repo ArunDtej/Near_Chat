@@ -174,7 +174,7 @@ class BluetoothConnectionChecker extends Thread {
 
     public void stopChecker() {
         running = false;
-        this.interrupt(); // Ensure the thread exits promptly
+        this.interrupt();
     }
 }
 
