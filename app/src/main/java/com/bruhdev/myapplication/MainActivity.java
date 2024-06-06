@@ -179,8 +179,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void refresh() {
 
-        Util.EnableBluetooth(MainActivity.this);
-
         mc = ManageConnection.getInstance();
         mc.acceptConnection();
 
@@ -235,8 +233,9 @@ public class MainActivity extends AppCompatActivity {
                 if (isFirstTime()) {
                     TapTarget();
                 }
-
-                refresh();
+                else {
+                    refresh();
+                }
 
             } else {
                 Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
@@ -342,6 +341,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSequenceFinish() {
                         pbar.setVisibility(View.GONE);
+                        refresh();
                     }
 
                     @Override

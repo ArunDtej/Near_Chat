@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
+import com.bruhdev.myapplication.IOManager.MyBluetoothServices;
 import com.bruhdev.myapplication.UiManagers.ScanManager;
 import com.bruhdev.myapplication.Util;
 
@@ -14,6 +15,8 @@ public class ManageConnection {
     public  static ManageConnection instance;
     public  AcceptThread at;
     public ConnectThread ct;
+    public static boolean isConnected = false;
+    public static MyBluetoothServices mbs ;
 
     ManageConnection(){
         at  = AcceptThread.getInstance();

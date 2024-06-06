@@ -34,13 +34,15 @@ public class Util {
     public final static UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     public final static BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 
+    public static boolean InChat = false;
+
     public static Context appConext;
     public static Context context;
     public static Activity activity;
 
     public static BluetoothProfileDatabase database;
     public static BluetoothProfileDao dao;
-    public static String connectedAs ;
+    public static String connectedAs = "";
 
     public static void lg(String message) {
         Log.d("Logged", message);
@@ -134,6 +136,7 @@ public class Util {
                     .setPositiveButton("Enable", (dialog, which) -> {
                         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         main.startActivityForResult(intent, 20);
+                        dialog.dismiss();
                     })
                     .setNegativeButton("Cancel", (dialog, which) -> {
                         dialog.dismiss();

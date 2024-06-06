@@ -21,14 +21,64 @@
             android:orientation="vertical"
             android:weightSum="1">
 
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/Chattoolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 android:elevation="4dp"
-                android:paddingStart="20dp"
-                app:titleTextColor="@color/white" />
+                android:paddingStart="8dp"
+                app:titleTextColor="@color/white" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="3dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/profile_image"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/circle_background"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:padding="1dp"
+                        android:textColor="@color/white"
+                        android:textSize="22sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/toolbar_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:typeface="sans"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical" />
+
+                        <TextView
+                            android:id="@+id/status_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:gravity="center_vertical" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -40,7 +90,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/send"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:typeface="sans"
+                        android:textStyle="bold"
+                        android:text="send"
+                        android:gravity="center_vertical" />
+
                 </LinearLayout>
+
             </ScrollView>
 
         </LinearLayout>

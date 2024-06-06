@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
+import com.bruhdev.myapplication.IOManager.MyBluetoothServices;
 import com.bruhdev.myapplication.Util;
 
 import java.io.IOException;
@@ -34,6 +35,9 @@ class ConnectThread extends Thread {
             ConnectThread.mmSocket.connect();
             Util.safeInsert(ConnectThread.mmSocket.getRemoteDevice());
             Util.connectedAs = "Sender";
+            ManageConnection.isConnected = true;
+            ManageConnection.mbs = new MyBluetoothServices(mmSocket);
+
         } catch (IOException connectException) {
             Util.lg("connect thread run 37: " + connectException);
             return;

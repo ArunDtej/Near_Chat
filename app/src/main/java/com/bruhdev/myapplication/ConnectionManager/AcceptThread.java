@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.bruhdev.myapplication.IOManager.MyBluetoothServices;
 import com.bruhdev.myapplication.MainActivity;
 import com.bruhdev.myapplication.Util;
 import java.io.IOException;
@@ -93,6 +94,8 @@ class AcceptThread extends Thread {
                     public void onClick(DialogInterface dialog, int id) {
                         mainSocket = socket;
                         accepted = true;
+                        ManageConnection.isConnected = true;
+                        ManageConnection.mbs = new MyBluetoothServices(mainSocket);
                         try {
                             Util.safeInsert(mainSocket.getRemoteDevice());
                         }catch (Exception e){
