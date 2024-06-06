@@ -49,6 +49,7 @@ public class Chat extends AppCompatActivity {
     private String preferredName;
     private String address;
     public ManageConnection mc;
+    public static boolean isonline = false;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     public BluetoothConnectionChecker bcc;
@@ -92,44 +93,40 @@ public class Chat extends AppCompatActivity {
         loadMessages();
     }
 
-    private void loadMessages(){
-
+    private void loadMessages() {
         new Thread(() -> {
-            List<ChatMessage> previous_chat= ChatManager.getMessages(address);
+            List<ChatMessage> previous_chat = ChatManager.getMessages(address);
 
-            for(int i = 0; i < previous_chat.size(); i++){
-                ChatMessage chatitem = previous_chat.get(i);
+            // Use a StringBuilder to accumulate the HTML for all messages
+            StringBuilder allMessagesHtml = new StringBuilder();
+
+            for (ChatMessage chatitem : previous_chat) {
                 String m = chatitem.getMessage();
                 boolean isSent = chatitem.isSentTo();
                 long time = chatitem.getTimestamp();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        LinearLayout msgView ;
-                        if (isSent){
-                            msgView = getSendMessage(m, time);
-                        }
-                        else{
-                            msgView = getReceiveMessage(m, time);
-                        }
 
-                        ChatBox.addView(msgView);
-
-                        ChatScroller.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                ChatScroller.fullScroll(View.FOCUS_DOWN);
-                            }
-                        });
+                handler.post(() -> {
+                    LinearLayout msgView;
+                    if (isSent) {
+                        msgView = getSendMessage(m, time);
+                    } else {
+                        msgView = getReceiveMessage(m, time);
                     }
-
-
+                    ChatBox.addView(msgView);
                 });
             }
+
+            handler.post(() -> {
+                ChatScroller.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ChatScroller.scrollTo(0, ChatBox.getBottom());
+                    }
+                });
+            });
         }).start();
-
-
     }
+
 
 
     private void sendMessage() {
@@ -138,7 +135,7 @@ public class Chat extends AppCompatActivity {
                 String msg = messageInput.getText().toString();
                 messageInput.setText("");
 
-                if(checkAddress()) {
+                if(checkAddress() && Chat.isonline) {
                     ManageConnection.mbs.send(msg);
                     ChatManager.insert(msg, true, address);
                     long currentTimeMillis = System.currentTimeMillis();
@@ -317,7 +314,9 @@ public class Chat extends AppCompatActivity {
                 if (mc.getCurrentSocket() != null) {
                     if (ManageConnection.isConnected) {
                         statusText.setText("Online");
+                        Chat.isonline = true;
                     } else {
+                        Chat.isonline = false;
                         statusText.setText("Offline");
                     }
                 }
