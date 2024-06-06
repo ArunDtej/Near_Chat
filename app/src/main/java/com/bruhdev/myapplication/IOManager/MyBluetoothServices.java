@@ -16,7 +16,6 @@ import java.io.OutputStream;
 
 public class MyBluetoothServices {
     private static final String TAG = "MY_APP_DEBUG_TAG";
-//    private Handler handler;
     private Handler handler = new Handler(Looper.getMainLooper());
 
     public final ConnectedThread ct;

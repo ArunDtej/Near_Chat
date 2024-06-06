@@ -21,7 +21,6 @@
             android:orientation="vertical"
             android:weightSum="1">
 
-
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/Chattoolbar"
                 android:layout_width="match_parent"
@@ -29,7 +28,7 @@
                 android:background="?attr/colorPrimary"
                 android:elevation="4dp"
                 android:paddingStart="8dp"
-                app:titleTextColor="@color/white" >
+                app:titleTextColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -78,33 +77,54 @@
                 </LinearLayout>
             </androidx.appcompat.widget.Toolbar>
 
-
-
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:padding="10dp">
 
                 <LinearLayout
-                    android:id="@+id/profilesLayout"
+                    android:id="@+id/Chat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/send"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        android:typeface="sans"
-                        android:textStyle="bold"
-                        android:text="send"
-                        android:gravity="center_vertical" />
 
                 </LinearLayout>
 
             </ScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <EditText
+                    android:id="@+id/messageInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="textMultiLine"
+                    android:background="@drawable/edittext_background"
+                    android:padding="10dp"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/button_background"
+                    android:backgroundTint="@color/MainBackground"
+                    android:src="@android:drawable/ic_menu_send"
+                    android:padding="10dp"
+                    android:elevation="4dp"
+                    android:contentDescription="Send Message" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

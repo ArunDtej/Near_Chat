@@ -15,8 +15,13 @@ import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bruhdev.myapplication.ConnectionManager.ManageConnection;
 import com.bruhdev.myapplication.DBManager.BluetoothProfile;
@@ -27,7 +32,9 @@ public class Chat extends AppCompatActivity {
     private TextView profileImage;
     private TextView toolbarTitle;
     private TextView statusText;
-    TextView send;
+    private ImageButton send;
+    private EditText messageInput;
+    
 
     private String preferredName;
     private String address;
@@ -47,15 +54,19 @@ public class Chat extends AppCompatActivity {
         profileImage = findViewById(R.id.profile_image);
         toolbarTitle = findViewById(R.id.toolbar_title);
         statusText = findViewById(R.id.status_text);
-
+        messageInput = findViewById(R.id.messageInput);
         send = findViewById(R.id.send);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    ManageConnection.mbs.send("Hello");
+                    String msg = messageInput.getText().toString();
+                    ManageConnection.mbs.send(msg);
+                    messageInput.setText("");
+                    
                 }catch (Exception e){
+                    Toast.makeText(Chat.this, "Message not send, reconnect and try again 😂", Toast.LENGTH_SHORT).show();
                     Util.lg(" "+ e);
                 }
             }
