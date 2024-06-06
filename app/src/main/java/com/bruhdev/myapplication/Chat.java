@@ -2,9 +2,13 @@ package com.bruhdev.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -20,11 +24,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bruhdev.myapplication.ConnectionManager.ManageConnection;
 import com.bruhdev.myapplication.DBManager.BluetoothProfile;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Chat extends AppCompatActivity {
 
@@ -33,6 +42,8 @@ public class Chat extends AppCompatActivity {
     private TextView statusText;
     private ImageButton send;
     private EditText messageInput;
+    LinearLayout ChatBox;
+    ScrollView ChatScroller;
     
 
     private String preferredName;
@@ -54,19 +65,13 @@ public class Chat extends AppCompatActivity {
         statusText = findViewById(R.id.status_text);
         messageInput = findViewById(R.id.messageInput);
         send = findViewById(R.id.send);
+        ChatBox = findViewById(R.id.Chat);
+        ChatScroller = findViewById(R.id.ChatScroller);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    String msg = messageInput.getText().toString();
-                    ManageConnection.mbs.send(msg);
-                    messageInput.setText("");
-                    
-                }catch (Exception e){
-                    Toast.makeText(Chat.this, "Message not send, reconnect and try again 😂", Toast.LENGTH_SHORT).show();
-                    Util.lg(" "+ e);
-                }
+                sendMessage();
             }
         });
 
@@ -86,7 +91,140 @@ public class Chat extends AppCompatActivity {
 
     }
 
-    public void setToolbarItems(){
+
+    private void sendMessage() {
+        try {
+            String msg = messageInput.getText().toString();
+            messageInput.setText("");
+
+            //            ManageConnection.mbs.send(msg);
+
+            LinearLayout temp = getSendMessage(msg);
+            ChatBox.addView(temp);
+
+            ChatScroller.post(new Runnable() {
+                @Override
+                public void run() {
+                    ChatScroller.fullScroll(View.FOCUS_DOWN);
+                }
+            });
+
+        } catch (Exception e) {
+            Toast.makeText(Chat.this, "Message not send, reconnect and try again 😂", Toast.LENGTH_SHORT).show();
+            Util.lg(" " + e);
+        }
+    }
+
+    private LinearLayout getReceiveMessage(String msg){
+        LinearLayout messageLayoutWrapper = new LinearLayout(this);
+        messageLayoutWrapper.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        messageLayoutWrapper.setGravity(Gravity.START);
+
+        LinearLayout messageLayout = new LinearLayout(this);
+        messageLayout.setOrientation(LinearLayout.VERTICAL);
+        messageLayout.setPadding(25, 20, 25, 20);
+        messageLayout.setBackgroundResource(R.drawable.rounded_bg);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(10, 10, 150, 10); // Adjust left margin to align to the left
+        messageLayout.setLayoutParams(params);
+
+        TextView messageTextView = new TextView(this);
+        messageTextView.setText(msg);
+        messageTextView.setTextSize(16);
+        messageTextView.setTextColor(Color.WHITE);
+
+        messageLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Chat.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Copied Text", messageTextView.getText());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getApplicationContext(), "Text copied to clipboard", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        long currentTimeMillis = System.currentTimeMillis();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        String formattedTimestamp = sdf.format(new Date(currentTimeMillis));
+
+        TextView timestampTextView = new TextView(this);
+        timestampTextView.setText(formattedTimestamp);
+        timestampTextView.setTextSize(10);
+        timestampTextView.setPadding(10,2,0,3); // Adjust padding for left alignment
+        timestampTextView.setGravity(Gravity.LEFT); // Set gravity to left for timestamp
+        timestampTextView.setTextColor(Color.WHITE);
+
+        messageLayout.addView(messageTextView);
+        messageLayout.addView(timestampTextView);
+        messageLayoutWrapper.addView(messageLayout);
+        return messageLayoutWrapper;
+    }
+
+
+    private LinearLayout getSendMessage(String msg){
+        LinearLayout messageLayoutWrapper = new LinearLayout(this);
+        messageLayoutWrapper.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        messageLayoutWrapper.setGravity(Gravity.END);
+
+        LinearLayout messageLayout = new LinearLayout(this);
+        messageLayout.setOrientation(LinearLayout.VERTICAL);
+        messageLayout.setPadding(25, 20, 25, 20);
+        messageLayout.setBackgroundResource(R.drawable.rounded_bg);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(150, 10, 10, 10);
+        messageLayout.setLayoutParams(params);
+
+        TextView messageTextView = new TextView(this);
+        messageTextView.setText(msg);
+        messageTextView.setTextSize(16);
+        messageTextView.setTextColor(Color.WHITE);
+
+        messageLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Chat.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Copied Text", messageTextView.getText());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getApplicationContext(), "Text copied to clipboard", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        long currentTimeMillis = System.currentTimeMillis();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        String formattedTimestamp = sdf.format(new Date(currentTimeMillis));
+
+        TextView timestampTextView = new TextView(this);
+        timestampTextView.setText(formattedTimestamp);
+        timestampTextView.setTextSize(10);
+        timestampTextView.setPadding(0,2,10,3);
+        timestampTextView.setGravity(Gravity.RIGHT);
+        timestampTextView.setTextColor(Color.WHITE);
+
+        messageLayout.addView(messageTextView);
+        messageLayout.addView(timestampTextView);
+        messageLayoutWrapper.addView(messageLayout);
+        return messageLayoutWrapper;
+    }
+
+
+
+    private void setToolbarItems(){
 
         new Thread(() -> {
             BluetoothProfile profile = Util.getProfile(address);
