@@ -28,7 +28,6 @@ import com.bruhdev.myapplication.DBManager.BluetoothProfile;
 
 public class Chat extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private TextView profileImage;
     private TextView toolbarTitle;
     private TextView statusText;
@@ -50,7 +49,6 @@ public class Chat extends AppCompatActivity {
         Util.track(this, Chat.this);
         Util.InChat = true;
 
-        toolbar = findViewById(R.id.Chattoolbar);
         profileImage = findViewById(R.id.profile_image);
         toolbarTitle = findViewById(R.id.toolbar_title);
         statusText = findViewById(R.id.status_text);
@@ -145,7 +143,6 @@ public class Chat extends AppCompatActivity {
 @SuppressLint("MissingPermission")
 class BluetoothConnectionChecker extends Thread {
 
-    private static final String TAG = "BluetoothConnectionChecker";
     private volatile boolean running = true;
     private final Chat main;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -165,7 +162,7 @@ class BluetoothConnectionChecker extends Thread {
                         main.updateStatus();
                     }
                 });
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
