@@ -17,8 +17,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,10 @@ import android.widget.TextView;
 import com.bruhdev.myapplication.ChatDB.ChatManager;
 import com.bruhdev.myapplication.ChatDB.ChatMessage;
 import com.bruhdev.myapplication.DBManager.BluetoothProfile;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -41,11 +47,29 @@ import java.util.Set;
 public class Messenger extends AppCompatActivity {
 
     LinearLayout profilesLayout ;
+    LinearLayout adContainerView;
+    AdView adView;
+
     public List<BluetoothProfile> profiles;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messenger);
+
+        adView = findViewById(R.id.myadd);
+
+        try {
+            new Thread(
+                    () -> {
+                        // Initialize the Google Mobile Ads SDK on a background thread.
+                        MobileAds.initialize(this, initializationStatus -> {});
+                    })
+                    .start();
+            loadBanner();
+        }catch (Exception e){
+            Util.lg(" Displaying add in messenger " + e);
+        }
 
         Util.track(this, Messenger.this);
 
@@ -329,6 +353,32 @@ public class Messenger extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private AdSize getAdSize() {
+        // Determine the screen width (less decorations) to use for the ad width.
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = outMetrics.density;
+
+        float adWidthPixels = adContainerView.getWidth();
+
+        // If the ad hasn't been laid out, default to the full screen width.
+        if (adWidthPixels == 0) {
+            adWidthPixels = outMetrics.widthPixels;
+        }
+
+        int adWidth = (int) (adWidthPixels / density);
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
+    }
+
+    private void loadBanner() {
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        adView.loadAd(adRequest);
     }
 
     @Override

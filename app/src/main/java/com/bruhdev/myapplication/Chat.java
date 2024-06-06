@@ -30,6 +30,9 @@ import com.bruhdev.myapplication.ChatDB.ChatManager;
 import com.bruhdev.myapplication.ChatDB.ChatMessage;
 import com.bruhdev.myapplication.ConnectionManager.ManageConnection;
 import com.bruhdev.myapplication.DBManager.BluetoothProfile;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,12 +49,13 @@ public class Chat extends AppCompatActivity {
     LinearLayout ChatBox;
     ScrollView ChatScroller;
     Button connect_button;
-    
 
     private String preferredName;
     private String address;
     public ManageConnection mc;
     public static boolean isonline = false;
+
+    AdView adView ;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     public BluetoothConnectionChecker bcc;
@@ -62,7 +66,21 @@ public class Chat extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         Util.track(this, Chat.this);
+
+        adView = findViewById(R.id.myadd2);
         Util.InChat = true;
+
+        try {
+            new Thread(
+                    () -> {
+                        // Initialize the Google Mobile Ads SDK on a background thread.
+                        MobileAds.initialize(this, initializationStatus -> {});
+                    })
+                    .start();
+            loadBanner();
+        }catch (Exception e){
+            Util.lg(" Displaying add in messenger " + e);
+        }
 
         profileImage = findViewById(R.id.profile_image);
         toolbarTitle = findViewById(R.id.toolbar_title);
@@ -364,6 +382,13 @@ public class Chat extends AppCompatActivity {
             }
         }
         return temp;
+    }
+
+    private void loadBanner() {
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        adView.loadAd(adRequest);
     }
 }
 
