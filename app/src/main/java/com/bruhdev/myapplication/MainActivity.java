@@ -230,8 +230,9 @@ public class MainActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
 
+                TapTarget();
                 if (isFirstTime()) {
-                    TapTarget();
+//                    TapTarget();
                 }
                 else {
                     refresh();
@@ -247,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
     void TapTarget(){
 
         pbar.setVisibility(View.VISIBLE);
-
         TapTargetSequence tvs = new TapTargetSequence(this)
                 .targets(
                         TapTarget.forView(findViewById(R.id.discovery_text), "Discoverable", "Makes your discoverable when other devices start a scan")

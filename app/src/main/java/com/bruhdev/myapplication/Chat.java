@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -44,6 +45,7 @@ public class Chat extends AppCompatActivity {
     private EditText messageInput;
     LinearLayout ChatBox;
     ScrollView ChatScroller;
+    Button connect_button;
     
 
     private String preferredName;
@@ -69,11 +71,20 @@ public class Chat extends AppCompatActivity {
         send = findViewById(R.id.send);
         ChatBox = findViewById(R.id.Chat);
         ChatScroller = findViewById(R.id.ChatScroller);
+        connect_button = findViewById(R.id.connect_button);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendMessage();
+            }
+        });
+
+        connect_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ManageConnection mc = ManageConnection.getInstance();
+                mc.reqConnection(Util.currentDevice);
             }
         });
 
@@ -290,6 +301,7 @@ public class Chat extends AppCompatActivity {
 
         new Thread(() -> {
             BluetoothProfile profile = Util.getProfile(address);
+
             preferredName = profile.getPreferredDeviceName();
 
             new Handler(Looper.getMainLooper()).post(() -> {
@@ -343,12 +355,13 @@ public class Chat extends AppCompatActivity {
     }
 
     boolean checkAddress(){
-        boolean temp ;
-        if(address.matches(ManageConnection.getInstance().getCurrentSocket().getRemoteDevice().getAddress())){
-            temp = true;
-        }
-        else{
-            temp = false;
+        boolean temp = false;
+        if(ManageConnection.getInstance().getCurrentSocket() != null) {
+            if (address.matches(ManageConnection.getInstance().getCurrentSocket().getRemoteDevice().getAddress())) {
+                temp = true;
+            } else {
+                temp = false;
+            }
         }
         return temp;
     }

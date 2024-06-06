@@ -1,5 +1,8 @@
 package com.bruhdev.myapplication;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -10,6 +13,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -44,6 +49,7 @@ public class Util {
 
     public static BluetoothProfileDatabase database;
     public static BluetoothProfileDao dao;
+    public static BluetoothDevice currentDevice ;
     public static String connectedAs = "";
 
     public static void lg(String message) {
@@ -194,6 +200,23 @@ public class Util {
         int randomIndex = random.nextInt(numbersArray.length);
 
         return numbersArray[randomIndex];
+    }
+
+    public static void vibrateDevice() {
+
+        try {
+            Vibrator vibrator = (Vibrator) Util.context.getSystemService(VIBRATOR_SERVICE);
+            if (vibrator != null) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    vibrator.vibrate(500);
+                }
+            }
+        }catch (Exception e){
+            Util.lg(" in vibrate: " +e);
+        }
+
     }
 
 }

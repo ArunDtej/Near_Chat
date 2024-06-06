@@ -30,6 +30,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
+import com.bruhdev.myapplication.Chat;
 import com.bruhdev.myapplication.ConnectionManager.ManageConnection;
 import com.bruhdev.myapplication.MainActivity;
 import com.bruhdev.myapplication.R;
@@ -190,6 +191,14 @@ public class ScanManager {
             @Override
             public void onClick(View view) {
                 onProfileClick(device);
+                try {
+                    Intent i = new Intent(Util.context, Chat.class);
+                    i.putExtra("Address", device.getAddress());
+                    i.putExtra("Name", device.getName());
+                    Util.context.startActivity(i);
+                }catch (Exception e){
+                    Util.lg(" in trying to open unregistered device scan manager "+ e);
+                }
             }
         });
         mainLayout.setOnLongClickListener(new View.OnLongClickListener() {
@@ -231,6 +240,7 @@ public class ScanManager {
             @Override
             public void onClick(View view) {
 
+                Util.vibrateDevice();
                 onProfileClick(device);
             }
         });
@@ -290,6 +300,7 @@ public class ScanManager {
 
     public void onProfileClick(BluetoothDevice device){
         try {
+            Util.currentDevice = device;
             mc.reqConnection(device);
         }
         catch (Exception e){

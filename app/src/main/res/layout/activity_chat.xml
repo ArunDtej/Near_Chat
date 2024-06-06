@@ -30,52 +30,70 @@
                 android:paddingStart="4dp"
                 app:titleTextColor="@color/white">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="3dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/profile_image"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/circle_background"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:padding="1dp"
-                        android:textColor="@color/white"
-                        android:textSize="22sp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="3dp"
                         android:gravity="center_vertical">
 
                         <TextView
-                            android:id="@+id/toolbar_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:id="@+id/profile_image"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@drawable/circle_background"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:padding="1dp"
                             android:textColor="@color/white"
-                            android:textSize="20sp"
-                            android:typeface="sans"
-                            android:textStyle="bold"
-                            android:gravity="center_vertical" />
+                            android:textSize="22sp" />
 
-                        <TextView
-                            android:id="@+id/status_text"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:textSize="12sp"
-                            android:gravity="center_vertical" />
+                            android:orientation="vertical"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/toolbar_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:typeface="sans"
+                                android:textStyle="bold"
+                                android:gravity="center_vertical" />
+
+                            <TextView
+                                android:id="@+id/status_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="12sp"
+                                android:gravity="center_vertical" />
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
+
+                    <Button
+                        android:id="@+id/connect_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Connect"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:padding="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:textColor="@color/white"
+                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                </RelativeLayout>
             </androidx.appcompat.widget.Toolbar>
+
 
             <ScrollView
                 android:id="@+id/ChatScroller"

@@ -3,6 +3,9 @@ package com.bruhdev.myapplication.ConnectionManager;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
 
 import com.bruhdev.myapplication.IOManager.MyBluetoothServices;
 import com.bruhdev.myapplication.Util;
@@ -38,7 +41,26 @@ class ConnectThread extends Thread {
             ManageConnection.isConnected = true;
             ManageConnection.mbs = new MyBluetoothServices(mmSocket);
 
+
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(Util.activity, "Connection Successful", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         } catch (IOException connectException) {
+
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(Util.activity, "Connection failed 😔", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
             Util.lg("connect thread run 37: " + connectException);
             return;
         }

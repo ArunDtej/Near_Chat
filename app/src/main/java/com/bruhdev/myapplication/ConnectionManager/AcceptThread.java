@@ -65,6 +65,11 @@ class AcceptThread extends Thread {
             if (socket != null) {
                 AcceptThread.isAccepting = true;
                 displayDialog(socket);
+                try{
+                    Util.vibrateDevice();
+                }catch (Exception e){
+                    Util.lg(" message ");
+                }
                 AcceptThread.accepted = true;
                 Util.lg("Connection Accepted");
             }

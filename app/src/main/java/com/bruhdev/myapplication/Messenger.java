@@ -4,6 +4,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,7 +34,9 @@ import com.bruhdev.myapplication.ChatDB.ChatManager;
 import com.bruhdev.myapplication.ChatDB.ChatMessage;
 import com.bruhdev.myapplication.DBManager.BluetoothProfile;
 
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 
 public class Messenger extends AppCompatActivity {
 
@@ -143,6 +148,7 @@ public class Messenger extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                Util.currentDevice = Util.adapter.getRemoteDevice(p.getDeviceAddress());
                 Intent intent = new Intent(Messenger.this, Chat.class);
                 intent.putExtra("Address", p.getDeviceAddress());
                 startActivity(intent);
@@ -196,9 +202,27 @@ public class Messenger extends AppCompatActivity {
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+
                 Util.removeBluetoothProfile(deviceToRemove);
                 ChatManager.deleteChat(deviceToRemove);
                 refresh();
+
+
+                BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                @SuppressLint("MissingPermission") Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+
+                for (BluetoothDevice device : pairedDevices) {
+                    if (device.equals(deviceToRemove)) {
+                        try {
+                            Method method = device.getClass().getMethod("removeBond", (Class[]) null);
+                            method.invoke(device, (Object[]) null);
+                        } catch (Exception e) {
+                            Log.d("Logged", e+"");
+                        }
+                        break;
+                    }
+                }
+
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
