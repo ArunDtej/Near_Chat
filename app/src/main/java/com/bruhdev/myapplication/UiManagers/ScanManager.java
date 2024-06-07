@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
@@ -300,9 +301,14 @@ public class ScanManager {
 
     public void onProfileClick(BluetoothDevice device){
         try {
-            mc = ManageConnection.getInstance();
-            Util.currentDevice = device;
-            mc.reqConnection(device);
+            if (Util.isLocationEnabled(Util.context) && Util.isBluetoothEnabled()) {
+                mc = ManageConnection.getInstance();
+                Util.currentDevice = device;
+                mc.reqConnection(device);
+            }
+            else{
+                Toast.makeText(Util.context, "Enable Bluetooth & Location and try again 🤡", Toast.LENGTH_SHORT).show();
+            }
         }
         catch (Exception e){
             Util.lg(" 309 : "+ e);

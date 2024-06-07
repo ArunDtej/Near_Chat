@@ -69,8 +69,8 @@ public class Chat extends AppCompatActivity {
         Util.track(this, Chat.this);
 
         adView = findViewById(R.id.myadd2);
-        Util.InChat = true;
 
+        Util.InChat = true;
         try {
             new Thread(
                     () -> {
@@ -101,16 +101,21 @@ public class Chat extends AppCompatActivity {
         connect_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ManageConnection mc = ManageConnection.getInstance();
-                mc.reqConnection(Util.currentDevice);
+                if(Util.isBluetoothEnabled() && Util.isLocationEnabled(Chat.this)) {
+                    ManageConnection mc = ManageConnection.getInstance();
+                    mc.reqConnection(Util.currentDevice);
+                }else{
+                    Toast.makeText(Chat.this, "Enable Bluetooth/Location & try again", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
             Intent intent = getIntent();
             address = intent.getStringExtra("Address");
-            setToolbarItems();
+            if(Util.isLocationEnabled(this) && Util.isBluetoothEnabled()) {
+                setToolbarItems();
+            }
 
-//
         GradientDrawable drawable = (GradientDrawable) profileImage.getBackground();
         drawable.setColor(Util.getCustomColor(this));
 
@@ -124,39 +129,42 @@ public class Chat extends AppCompatActivity {
     }
 
     private void loadMessages() {
-        new Thread(() -> {
-            List<ChatMessage> previous_chat = ChatManager.getMessages(address);
+        if(Util.isBluetoothEnabled() && Util.isLocationEnabled(this)) {
+            new Thread(() -> {
+                List<ChatMessage> previous_chat = ChatManager.getMessages(address);
 
-            // Use a StringBuilder to accumulate the HTML for all messages
-            StringBuilder allMessagesHtml = new StringBuilder();
+                StringBuilder allMessagesHtml = new StringBuilder();
 
-            for (ChatMessage chatitem : previous_chat) {
-                String m = chatitem.getMessage();
-                boolean isSent = chatitem.isSentTo();
-                long time = chatitem.getTimestamp();
+                for (ChatMessage chatitem : previous_chat) {
+                    String m = chatitem.getMessage();
+                    boolean isSent = chatitem.isSentTo();
+                    long time = chatitem.getTimestamp();
+
+                    handler.post(() -> {
+                        LinearLayout msgView;
+                        if (isSent) {
+                            msgView = getSendMessage(m, time);
+                        } else {
+                            msgView = getReceiveMessage(m, time);
+                        }
+                        ChatBox.addView(msgView);
+                    });
+                }
 
                 handler.post(() -> {
-                    LinearLayout msgView;
-                    if (isSent) {
-                        msgView = getSendMessage(m, time);
-                    } else {
-                        msgView = getReceiveMessage(m, time);
-                    }
-                    ChatBox.addView(msgView);
+                    ChatScroller.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ChatScroller.scrollTo(0, ChatBox.getBottom());
+                        }
+                    });
                 });
-            }
-
-            handler.post(() -> {
-                ChatScroller.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        ChatScroller.scrollTo(0, ChatBox.getBottom());
-                    }
-                });
-            });
-        }).start();
+            }).start();
+        }
+        else{
+            Toast.makeText(this, "Enable Bluetooth & Location and try again", Toast.LENGTH_SHORT).show();
+        }
     }
-
 
 
     private void sendMessage() {

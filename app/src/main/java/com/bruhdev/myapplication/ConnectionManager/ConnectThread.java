@@ -21,34 +21,42 @@ class ConnectThread extends Thread {
     public ConnectThread(BluetoothDevice device) {
         BluetoothSocket tmp = null;
 
-        try {
-            tmp = device.createRfcommSocketToServiceRecord(Util.MY_UUID);
-            Util.lg("Socket created");
-        } catch (IOException e) {
-            Util.lg("Socket's create() method failed: " + e);
+        if(Util.isBluetoothEnabled() && Util.isLocationEnabled(Util.context)) {
+            try {
+                tmp = device.createRfcommSocketToServiceRecord(Util.MY_UUID);
+                Util.lg("Socket created");
+            } catch (IOException e) {
+                Util.lg("Socket's create() method failed: " + e);
+            }
+            ConnectThread.mmSocket = tmp;
+        }else{
+            Toast.makeText(Util.context, "Enable Bluetooth & Location and try again 🤡", Toast.LENGTH_SHORT).show();
         }
-        ConnectThread.mmSocket = tmp;
     }
 
     public void run() {
-        Util.adapter.cancelDiscovery();
 
         try {
-            isConnected = true;
-            ConnectThread.mmSocket.connect();
-            Util.safeInsert(ConnectThread.mmSocket.getRemoteDevice());
-            Util.connectedAs = "Sender";
-            ManageConnection.isConnected = true;
-            ManageConnection.mbs = new MyBluetoothServices(mmSocket);
+            if(Util.isBluetoothEnabled() && Util.isLocationEnabled(Util.context)) {
+                Util.lg(" Both are enabled");
+                Util.adapter.cancelDiscovery();
+                isConnected = true;
+                ConnectThread.mmSocket.connect();
+                Util.safeInsert(ConnectThread.mmSocket.getRemoteDevice());
+                Util.connectedAs = "Sender";
+                ManageConnection.isConnected = true;
+                ManageConnection.mbs = new MyBluetoothServices(mmSocket);
 
-
-            Handler mainHandler = new Handler(Looper.getMainLooper());
-            mainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(Util.activity, "Connection Successful", Toast.LENGTH_SHORT).show();
-                }
-            });
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Util.activity, "Connection Successful", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else{
+                Toast.makeText(Util.context, "Enable Bluetooth & Location and try again 🤡", Toast.LENGTH_SHORT).show();
+            }
 
         } catch (IOException connectException) {
 
@@ -59,8 +67,6 @@ class ConnectThread extends Thread {
                     Toast.makeText(Util.activity, "Connection failed 😔", Toast.LENGTH_SHORT).show();
                 }
             });
-
-
             Util.lg("connect thread run 37: " + connectException);
             return;
         }

@@ -116,7 +116,7 @@ public class Util {
 
     }
 
-    static boolean isLocationEnabled(Context main){
+    public static boolean isLocationEnabled(Context main){
         LocationManager locationManager = (LocationManager) main.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null) {
             return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
@@ -125,7 +125,7 @@ public class Util {
         return false;
     }
 
-    static boolean isBluetoothEnabled() {
+    public static boolean isBluetoothEnabled() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         return bluetoothAdapter != null && bluetoothAdapter.isEnabled();
     }
