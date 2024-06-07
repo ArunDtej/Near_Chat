@@ -30,98 +30,134 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@color/MainBackground"
-            android:padding = "15dp">
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp">
 
-            <TextView
-                android:id="@+id/WelcomeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:layout_marginTop="55dp"
-                android:layout_marginBottom="15dp"
-                android:textColor = "@color/white"
-                android:padding="10dp"/>
-
-            <TextView
-                android:id="@+id/discovery_text"
-                android:text="Discoverable?"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor = "#8DD7F8"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:layout_marginBottom="15dp"
-                 />
-
-            <TextView
-                android:id="@+id/connection_text"
-                android:text="CONNECTIONS"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor = "@color/white"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                tools:ignore="HardcodedText" />
-
-
-            <HorizontalScrollView
-                android:id="@+id/horizontalscroll"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:scrollbars="none">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="0.9"
+                android:background="@color/MainBackground"
+                android:padding = "15dp">
 
-                <LinearLayout
-                    android:id="@+id/PairedScroller"
+
+                <TextView
+                    android:id="@+id/WelcomeText"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"
+                    android:layout_marginTop="55dp"
+                    android:layout_marginBottom="15dp"
+                    android:textColor = "@color/white"
+                    android:padding="10dp"/>
 
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/discovery_text"
+                    android:text="Discoverable?"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor = "#8DD7F8"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_marginBottom="15dp"
+                     />
 
-            </HorizontalScrollView>
+                <TextView
+                    android:id="@+id/connection_text"
+                    android:text="CONNECTIONS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor = "@color/white"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/online_text"
-                android:text="ONLINE DEVICES"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor = "@color/white"
-                android:layout_marginBottom="15dp"
-                android:paddingLeft="10dp"/>
+
+                <HorizontalScrollView
+                    android:id="@+id/horizontalscroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/PairedScroller"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <TextView
+                    android:id="@+id/online_text"
+                    android:text="ONLINE DEVICES"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor = "@color/white"
+                    android:layout_marginBottom="15dp"
+                    android:paddingLeft="10dp"/>
 
 
-            <ScrollView
-                android:id="@+id/verticalscroll"
+                <ScrollView
+                    android:id="@+id/verticalscroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".8"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/DiscoveredScroller"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+                </ScrollView>
+
+                <TextView
+                    android:id="@+id/to_messages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="messages"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:padding="10dp"/>
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".8"
-                android:scrollbars="none">
+                android:orientation="vertical"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:background="@color/MainBackground">
 
-                <LinearLayout
-                    android:id="@+id/DiscoveredScroller"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                <com.google.android.gms.ads.AdView
+                    xmlns:ads="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/mainAd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    ads:adSize= "BANNER"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    ads:adUnitId= "ca-app-pub-1160445420598076/6353197226">
 
-                </LinearLayout>
-            </ScrollView>
+                </com.google.android.gms.ads.AdView>
 
-            <TextView
-                android:id="@+id/to_messages"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="messages"
-                android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:padding="10dp"/>
+            </LinearLayout>
+
 
         </LinearLayout>
 

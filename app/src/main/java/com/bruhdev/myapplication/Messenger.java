@@ -59,16 +59,16 @@ public class Messenger extends AppCompatActivity {
 
         adView = findViewById(R.id.myadd);
 
+        // Loading add
         try {
             new Thread(
                     () -> {
-                        // Initialize the Google Mobile Ads SDK on a background thread.
                         MobileAds.initialize(this, initializationStatus -> {});
                     })
                     .start();
             loadBanner();
         }catch (Exception e){
-            Util.lg(" Displaying add in messenger " + e);
+            Util.lg(" Displaying ad in messenger " + e);
         }
 
         Util.track(this, Messenger.this);

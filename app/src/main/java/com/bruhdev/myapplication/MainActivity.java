@@ -28,6 +28,9 @@ import com.bruhdev.myapplication.UiManagers.ScanManager;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.getkeepsafe.taptargetview.TapTargetView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.concurrent.Delayed;
 
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView to_message;
 
+    private AdView adView;
     public static Handler handler = new Handler();
     BluetoothAdapter adapter;
 
@@ -56,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         Util.appConext = getApplicationContext();
 
+
+        adView = findViewById(R.id.mainAd);
         welcome = findViewById(R.id.WelcomeText);
         pbar = findViewById(R.id.progressBar);
         MainActivity.vert = findViewById(R.id.DiscoveredScroller);
@@ -66,8 +72,21 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = Util.adapter;
 
+        try {
+            new Thread(
+                    () -> {
+                        MobileAds.initialize(this, initializationStatus -> {});
+                    })
+                    .start();
+            loadBanner();
+        }catch (Exception e){
+            Util.lg(" Displaying ad in Main " + e);
+        }
+
         Util.track(this, MainActivity.this);
         Util.setDatabase();
+
+
 
         to_message.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +177,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (!Util.CheckPermissions(this)) {
-            startActivityForResult(new Intent(this, IntroActivity.class), 10);
+
+            Util.lg(" Starting permission s");
+            startActivityForResult(new Intent(this, IntroActivity.class), 4);
+
         } else {
 
             try {
@@ -179,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void refresh() {
 
+        Util.lg(" Refreshing ");
         mc = ManageConnection.getInstance();
         mc.acceptConnection();
 
@@ -226,13 +249,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 10) {
+        if (requestCode == 4) {
 
             if (resultCode == RESULT_OK) {
 
+                Util.lg(" Result code received ");
                 TapTarget();
                 if (isFirstTime()) {
-//                    TapTarget();
+                    TapTarget();
                 }
                 else {
                     refresh();
@@ -354,6 +378,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         tvs.start();
+    }
+
+    private void loadBanner() {
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        adView.loadAd(adRequest);
     }
 
 
