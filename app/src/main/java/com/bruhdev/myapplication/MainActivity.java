@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Util.track(this,MainActivity.this);
         Util.appConext = getApplicationContext();
 
 
@@ -85,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         Util.track(this, MainActivity.this);
         Util.setDatabase();
-
 
 
         to_message.setOnClickListener(new View.OnClickListener() {
@@ -255,12 +255,14 @@ public class MainActivity extends AppCompatActivity {
 
                 Util.lg(" Result code received ");
                 TapTarget();
-                if (isFirstTime()) {
-                    TapTarget();
-                }
-                else {
-                    refresh();
-                }
+//                if (isFirstTime()) {
+//                    TapTarget();
+//                }
+//                else {
+//                    refresh();
+//                }
+                refresh();
+
 
             } else {
                 Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();

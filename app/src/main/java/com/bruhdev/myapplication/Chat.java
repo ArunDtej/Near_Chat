@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -73,7 +74,6 @@ public class Chat extends AppCompatActivity {
         try {
             new Thread(
                     () -> {
-                        // Initialize the Google Mobile Ads SDK on a background thread.
                         MobileAds.initialize(this, initializationStatus -> {});
                     })
                     .start();
@@ -106,10 +106,11 @@ public class Chat extends AppCompatActivity {
             }
         });
 
-        Intent intent = getIntent();
-        address = intent.getStringExtra("Address");
-        setToolbarItems();
+            Intent intent = getIntent();
+            address = intent.getStringExtra("Address");
+            setToolbarItems();
 
+//
         GradientDrawable drawable = (GradientDrawable) profileImage.getBackground();
         drawable.setColor(Util.getCustomColor(this));
 
@@ -315,12 +316,19 @@ public class Chat extends AppCompatActivity {
 
 
 
+    @SuppressLint("MissingPermission")
     private void setToolbarItems(){
 
         new Thread(() -> {
-            BluetoothProfile profile = Util.getProfile(address);
 
-            preferredName = profile.getPreferredDeviceName();
+            BluetoothProfile profile = Util.getProfile(address);
+            if (profile!= null) {
+                preferredName = profile.getPreferredDeviceName();
+            }
+            else{
+                BluetoothDevice d = Util.adapter.getRemoteDevice(address);
+                preferredName = d.getName();
+            }
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 String temp = preferredName;
@@ -330,7 +338,6 @@ public class Chat extends AppCompatActivity {
                 toolbarTitle.setText(temp);
                 String initialLetter = preferredName.substring(0, 1);
                 profileImage.setText(initialLetter);
-
                 statusText.setText("Offline");
             });
         }).start();

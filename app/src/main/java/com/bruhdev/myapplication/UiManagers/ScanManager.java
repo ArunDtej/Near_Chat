@@ -192,7 +192,7 @@ public class ScanManager {
             public void onClick(View view) {
                 onProfileClick(device);
                 try {
-                    Intent i = new Intent(Util.context, Chat.class);
+                    Intent i = new Intent(Util.activity, Chat.class);
                     i.putExtra("Address", device.getAddress());
                     i.putExtra("Name", device.getName());
                     Util.context.startActivity(i);
@@ -300,6 +300,7 @@ public class ScanManager {
 
     public void onProfileClick(BluetoothDevice device){
         try {
+            mc = ManageConnection.getInstance();
             Util.currentDevice = device;
             mc.reqConnection(device);
         }
