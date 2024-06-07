@@ -101,7 +101,7 @@ public class Chat extends AppCompatActivity {
         connect_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Util.isBluetoothEnabled() && Util.isLocationEnabled(Chat.this)) {
+                if(Util.isBluetoothEnabled() && Util.isLocationEnabled(Util.activity)) {
                     ManageConnection mc = ManageConnection.getInstance();
                     mc.reqConnection(Util.currentDevice);
                 }else{
@@ -112,9 +112,9 @@ public class Chat extends AppCompatActivity {
 
             Intent intent = getIntent();
             address = intent.getStringExtra("Address");
-            if(Util.isLocationEnabled(this) && Util.isBluetoothEnabled()) {
+//            if(Util.isLocationEnabled(this) && Util.isBluetoothEnabled()) {
                 setToolbarItems();
-            }
+//            }
 
         GradientDrawable drawable = (GradientDrawable) profileImage.getBackground();
         drawable.setColor(Util.getCustomColor(this));
@@ -129,7 +129,7 @@ public class Chat extends AppCompatActivity {
     }
 
     private void loadMessages() {
-        if(Util.isBluetoothEnabled() && Util.isLocationEnabled(this)) {
+//        if(Util.isBluetoothEnabled() && Util.isLocationEnabled(this)) {
             new Thread(() -> {
                 List<ChatMessage> previous_chat = ChatManager.getMessages(address);
 
@@ -160,10 +160,10 @@ public class Chat extends AppCompatActivity {
                     });
                 });
             }).start();
-        }
-        else{
-            Toast.makeText(this, "Enable Bluetooth & Location and try again", Toast.LENGTH_SHORT).show();
-        }
+//        }
+//        else{
+//            Toast.makeText(this, "Enable Bluetooth & Location and try again", Toast.LENGTH_SHORT).show();
+//        }
     }
 
 
