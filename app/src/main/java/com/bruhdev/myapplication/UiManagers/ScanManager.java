@@ -178,6 +178,8 @@ public class ScanManager {
     }
 
     LinearLayout getPairedItem(BluetoothDevice device){
+
+        final String name = device.getName();
         LinearLayout mainLayout = new LinearLayout(context);
         mainLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -195,7 +197,7 @@ public class ScanManager {
                 try {
                     Intent i = new Intent(Util.activity, Chat.class);
                     i.putExtra("Address", device.getAddress());
-                    i.putExtra("Name", device.getName());
+                    i.putExtra("Name", name);
                     Util.context.startActivity(i);
                 }catch (Exception e){
                     Util.lg(" in trying to open unregistered device scan manager "+ e);

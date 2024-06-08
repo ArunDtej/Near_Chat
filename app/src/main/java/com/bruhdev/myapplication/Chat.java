@@ -56,6 +56,7 @@ public class Chat extends AppCompatActivity {
     public ManageConnection mc;
     public static boolean isonline = false;
 
+
     AdView adView ;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -112,9 +113,14 @@ public class Chat extends AppCompatActivity {
 
             Intent intent = getIntent();
             address = intent.getStringExtra("Address");
-//            if(Util.isLocationEnabled(this) && Util.isBluetoothEnabled()) {
+            preferredName = intent.getStringExtra("Name");
+
+            try {
                 setToolbarItems();
-//            }
+            }catch (Exception e){
+                Util.lg(" "+ e);
+            }
+
 
         GradientDrawable drawable = (GradientDrawable) profileImage.getBackground();
         drawable.setColor(Util.getCustomColor(this));
@@ -333,12 +339,9 @@ public class Chat extends AppCompatActivity {
             if (profile!= null) {
                 preferredName = profile.getPreferredDeviceName();
             }
-            else{
-                BluetoothDevice d = Util.adapter.getRemoteDevice(address);
-                preferredName = d.getName();
-            }
 
             new Handler(Looper.getMainLooper()).post(() -> {
+                Util.lg(" "+preferredName);
                 String temp = preferredName;
                 if (preferredName.length() > 22) {
                     temp = preferredName.substring(0, 18);
@@ -349,6 +352,7 @@ public class Chat extends AppCompatActivity {
                 statusText.setText("Offline");
             });
         }).start();
+
     }
 
     void updateStatus(){

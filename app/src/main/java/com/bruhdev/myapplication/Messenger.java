@@ -176,6 +176,7 @@ public class Messenger extends AppCompatActivity {
                 Util.currentDevice = Util.adapter.getRemoteDevice(p.getDeviceAddress());
                 Intent intent = new Intent(Messenger.this, Chat.class);
                 intent.putExtra("Address", p.getDeviceAddress());
+                intent.putExtra("Name", p.getPreferredDeviceName());
                 startActivity(intent);
 
             }
