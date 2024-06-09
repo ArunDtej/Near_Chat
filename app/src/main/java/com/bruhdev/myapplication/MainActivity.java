@@ -110,40 +110,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        MainActivity.vert.setOnTouchListener(new View.OnTouchListener() {
-            private float startY;
-            private boolean isScrollingUp = false;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Util.lg(" clicked on vert");
-                swipeRefreshLayout.setEnabled(false);
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        startY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        float currentY = event.getY();
-                        isScrollingUp = currentY < startY;
-                        Util.lg(" swiping val "+ MainActivity.vert.getScrollY());
-                        if (MainActivity.vert.getScrollY() >5) {
-                            swipeRefreshLayout.setEnabled(true);
-                        } else {
-                            swipeRefreshLayout.setEnabled(false);
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        if (MainActivity.vert.getScrollY() != 0) {
-                            swipeRefreshLayout.setEnabled(false);
-                        }
-                        break;
-                }
-                swipeRefreshLayout.setEnabled(true);
-                return false;
-            }
-        });
-
 
 
         hori.setOnTouchListener(new View.OnTouchListener() {

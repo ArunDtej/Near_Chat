@@ -109,7 +109,7 @@
                     android:paddingLeft="10dp"/>
 
 
-                <ScrollView
+                <androidx.core.widget.NestedScrollView
                     android:id="@+id/verticalscroll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
                         android:orientation="vertical">
 
                     </LinearLayout>
-                </ScrollView>
+                </androidx.core.widget.NestedScrollView>
 
                 <TextView
                     android:id="@+id/to_messages"
