@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         hori.setOnTouchListener(new View.OnTouchListener() {
             private float startY;
 
