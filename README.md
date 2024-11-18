@@ -1,3 +1,5 @@
+Near Chat - Offline Chat App is a Bluetooth-based Android chatting app for real-time communication without an internet connection. Perfect for nearby chatting when network access is unavailable.
+
 # Near Chat - Offline Chat App
 
 ### Overview
